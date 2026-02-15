@@ -1,0 +1,428 @@
+// fichier.h
+
+#pragma once
+#include <string>
+
+class Pisciculture
+{
+private:
+    int nbrepoissons;
+    int criticite;
+    std::string nom;
+    
+    void perte_infection(); 
+
+public:
+    Pisciculture(std::string n = "Pisciculture", int nb = 700);
+    int get_nbrepoissons();
+    int get_criticite();
+    void lactococcose();
+    void arrivage(int nbalevins);
+    void bilan_criticite();
+};
+
+///////////////////////////////////////////////////////////////////////////////////
+// fichier.cpp
+
+#include "pch.h"
+#include "pisciculture.h"
+#include <cstdlib>
+#include <ctime>
+#include <afxwin.h>
+
+Pisciculture::Pisciculture(std::string n, int nb)
+{
+    nom = n;
+    nbrepoissons = nb;
+    criticite = 0;
+}
+
+void Pisciculture::perte_infection()
+{
+    int perte = rand() % (nbrepoissons + 1);
+    nbrepoissons -= perte;
+    
+    CString msg;
+    msg.Format(L"Perte suite a infection : %d poissons", perte);
+    ::MessageBox(nullptr, msg, L"Pisciculture", MB_OK);
+}
+
+int Pisciculture::get_nbrepoissons()
+{
+    return nbrepoissons;
+}
+
+int Pisciculture::get_criticite()
+{
+    return criticite;
+}
+
+void Pisciculture::lactococcose()
+{
+    criticite += 2;
+    
+    CString msg;
+    msg.Format(L"Infection a la lactococcose !! Le niveau de criticite augmente de 2 points");
+    ::MessageBox(nullptr, msg, L"Pisciculture", MB_OK);
+    
+    perte_infection();
+}
+
+void Pisciculture::arrivage(int nbalevins)
+{
+    nbrepoissons += nbalevins;
+}
+
+void Pisciculture::bilan_criticite()
+{
+    CString msg;
+    
+    if (criticite > 2)
+    {
+        msg.Format(L"La pisciculture est en danger");
+    }
+    else if (criticite == 2)
+    {
+        msg.Format(L"La pisciculture compte 119 poissons");
+    }
+    else if (criticite == 1)
+    {
+        msg.Format(L"La pisciculture compte 21 poissons");
+    }
+    else
+    {
+        msg.Format(L"La pisciculture compte 700 poissons");
+    }
+    
+    ::MessageBox(nullptr, msg, L"Pisciculture", MB_OK);
+    criticite = 0;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////
+// console
+
+// test_classe.cpp : Ce fichier contient la fonction 'main'. L'exécution du programme commence et se termine à cet endroit.
+//
+
+#include "pch.h"
+#include "framework.h"
+#include "test_classe.h"
+#include "pisciculture.h"
+#include <cstdlib>
+#include <ctime>
+
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
+
+// Seul et unique objet application
+
+CWinApp theApp;
+
+using namespace std;
+
+int main()
+{
+    int nRetCode = 0;
+
+    HMODULE hModule = ::GetModuleHandle(nullptr);
+
+    if (hModule != nullptr)
+    {
+        // initialise MFC et affiche un message d'erreur en cas d'échec
+        if (!AfxWinInit(hModule, nullptr, ::GetCommandLine(), 0))
+        {
+            // TODO: codez le comportement de l'application à cet emplacement.
+            wprintf(L"Erreur irrécupérable : échec de l'initialisation de MFC\n");
+            nRetCode = 1;
+        }
+        else
+        {
+            // Initialisation du générateur de nombres aléatoires
+            srand(static_cast<unsigned int>(time(nullptr)));
+
+            // Test du constructeur par défaut
+            Pisciculture p1;
+
+            // Test du constructeur avec paramètres
+            Pisciculture p2("Ferme Aquatique", 500);
+
+            // Test de get_nbrepoissons
+            int nbPoissons = p1.get_nbrepoissons();
+
+            // Test de get_criticite
+            int criticite = p1.get_criticite();
+
+            // Test de arrivage
+            p1.arrivage(100);
+
+            // Test de lactococcose
+            p1.lactococcose();
+
+            // Test de bilan_criticite
+            p1.bilan_criticite();
+
+            // Test avec p2
+            p2.arrivage(50);
+            p2.lactococcose();
+            p2.lactococcose();
+            p2.bilan_criticite();
+        }
+    }
+    else
+    {
+        // TODO: changez le code d'erreur selon les besoins
+        wprintf(L"Erreur irrécupérable : échec de GetModuleHandle\n");
+        nRetCode = 1;
+    }
+
+    return nRetCode;
+}
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// aquaculture.cpp
+
+// aquaculture.cpp : Définit les fonctions de la bibliothèque statique.
+//
+
+#include "pch.h"
+#include "framework.h"
+#include "aquaculture.h"
+
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
+
+// Seul et unique objet application
+
+CWinApp theApp;
+
+using namespace std;
+
+int main()
+{
+    int nRetCode = 0;
+
+    HMODULE hModule = ::GetModuleHandle(nullptr);
+
+    if (hModule != nullptr)
+    {
+        // initialise MFC et affiche un message d'erreur en cas d'échec
+        if (!AfxWinInit(hModule, nullptr, ::GetCommandLine(), 0))
+        {
+            // TODO: codez le comportement de l'application à cet emplacement.
+            wprintf(L"Erreur irrécupérable : échec de l'initialisation de MFC\n");
+            nRetCode = 1;
+        }
+        else
+        {
+            // TODO: codez le comportement de l'application à cet emplacement.
+        }
+    }
+    else
+    {
+        // TODO: changez le code d'erreur selon les besoins
+        wprintf(L"Erreur irrécupérable : échec de GetModuleHandle\n");
+        nRetCode = 1;
+    }
+
+    return nRetCode;
+}
+// TODO: Il s'agit d'un exemple de fonction de bibliothèque
+void fnaquaculture()
+{
+}
+
+////////////////////////////////////////////////////////////////////////////////////////
+
+// supervision_piscicultureDlg.h : fichier d'en-tête
+//
+
+#pragma once
+#include "..\test_classe\pisciculture.h"
+
+// boîte de dialogue de CsupervisionpiscicultureDlg
+class CsupervisionpiscicultureDlg : public CDialogEx
+{
+// Construction
+public:
+	CsupervisionpiscicultureDlg(CWnd* pParent = nullptr);	// constructeur standard
+
+// Données de boîte de dialogue
+#ifdef AFX_DESIGN_TIME
+	enum { IDD = IDD_SUPERVISION_PISCICULTURE_DIALOG };
+#endif
+
+protected:
+	virtual void DoDataExchange(CDataExchange* pDX);	// Prise en charge de DDX/DDV
+
+
+// Implémentation
+protected:
+	HICON m_hIcon;
+
+	// Fonctions générées de la table des messages
+	virtual BOOL OnInitDialog();
+	afx_msg void OnPaint();
+	afx_msg HCURSOR OnQueryDragIcon();
+	DECLARE_MESSAGE_MAP()
+
+public:
+	CListBox m_listVolPoissons;    // IDC_LIST1
+	CComboBox m_comboArrivage;     // IDC_COMBO1
+	Pisciculture m_pisciculture;
+	
+	afx_msg void OnBnClickedButton1();  // Criticite
+	afx_msg void OnBnClickedButton2();  // Lactococcose
+	afx_msg void OnBnClickedButton3();  // Vol par un predateur
+	afx_msg void OnCbnSelchangeCombo1(); // Arrivage
+	afx_msg void OnEnChangeEdit1();
+};
+
+///////////////////////////////////////////////////////////////////////////////////////
+
+
+// supervision_piscicultureDlg.cpp : fichier d'implémentation
+//
+
+#include "pch.h"
+#include "framework.h"
+#include "supervision_pisciculture.h"
+#include "supervision_piscicultureDlg.h"
+#include "afxdialogex.h"
+
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
+CsupervisionpiscicultureDlg::CsupervisionpiscicultureDlg(CWnd* pParent /*=nullptr*/)
+	: CDialogEx(IDD_SUPERVISION_PISCICULTURE_DIALOG, pParent)
+	, m_pisciculture("Pisciculture", 700)
+{
+	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
+}
+
+void CsupervisionpiscicultureDlg::DoDataExchange(CDataExchange* pDX)
+{
+	CDialogEx::DoDataExchange(pDX);
+	DDX_Control(pDX, IDC_LIST1, m_listVolPoissons);
+	DDX_Control(pDX, IDC_COMBO1, m_comboArrivage);
+}
+
+BEGIN_MESSAGE_MAP(CsupervisionpiscicultureDlg, CDialogEx)
+	ON_WM_PAINT()
+	ON_WM_QUERYDRAGICON()
+	ON_BN_CLICKED(IDC_BUTTON1, &CsupervisionpiscicultureDlg::OnBnClickedButton1)
+	ON_BN_CLICKED(IDC_BUTTON2, &CsupervisionpiscicultureDlg::OnBnClickedButton2)
+	ON_BN_CLICKED(IDC_BUTTON3, &CsupervisionpiscicultureDlg::OnBnClickedButton3)
+	ON_CBN_SELCHANGE(IDC_COMBO1, &CsupervisionpiscicultureDlg::OnCbnSelchangeCombo1)
+	ON_EN_CHANGE(IDC_EDIT1, &CsupervisionpiscicultureDlg::OnEnChangeEdit1)
+END_MESSAGE_MAP()
+
+BOOL CsupervisionpiscicultureDlg::OnInitDialog()
+{
+	CDialogEx::OnInitDialog();
+
+	SetIcon(m_hIcon, TRUE);
+	SetIcon(m_hIcon, FALSE);
+
+	m_listVolPoissons.AddString(_T("10 poissons"));
+	m_listVolPoissons.AddString(_T("20 poissons"));
+	m_listVolPoissons.AddString(_T("30 poissons"));
+	m_listVolPoissons.AddString(_T("40 poissons"));
+	m_listVolPoissons.AddString(_T("50 poissons"));
+
+	m_comboArrivage.AddString(_T("10 alevins"));
+	m_comboArrivage.AddString(_T("20 alevins"));
+	m_comboArrivage.AddString(_T("30 alevins"));
+	m_comboArrivage.AddString(_T("40 alevins"));
+	m_comboArrivage.AddString(_T("50 alevins"));
+
+	return TRUE;
+}
+
+void CsupervisionpiscicultureDlg::OnPaint()
+{
+	if (IsIconic())
+	{
+		CPaintDC dc(this);
+		SendMessage(WM_ICONERASEBKGND, reinterpret_cast<WPARAM>(dc.GetSafeHdc()), 0);
+		int cxIcon = GetSystemMetrics(SM_CXICON);
+		int cyIcon = GetSystemMetrics(SM_CYICON);
+		CRect rect;
+		GetClientRect(&rect);
+		int x = (rect.Width() - cxIcon + 1) / 2;
+		int y = (rect.Height() - cyIcon + 1) / 2;
+		dc.DrawIcon(x, y, m_hIcon);
+	}
+	else
+	{
+		CDialogEx::OnPaint();
+	}
+}
+
+HCURSOR CsupervisionpiscicultureDlg::OnQueryDragIcon()
+{
+	return static_cast<HCURSOR>(m_hIcon);
+}
+
+void CsupervisionpiscicultureDlg::OnBnClickedButton1()
+{
+	int criticite = m_pisciculture.get_criticite();
+	
+	CString strMessage;
+	strMessage.Format(_T("Criticité: %d poissons"), criticite);
+	MessageBox(strMessage, _T("Bilan Criticité"), MB_OK);
+}
+
+void CsupervisionpiscicultureDlg::OnBnClickedButton2()
+{
+	m_pisciculture.lactococcose();
+	
+	MessageBox(_T("Attention! Infection à la lactococcose détectée."), _T("Lactococcose"), MB_OK);
+}
+
+void CsupervisionpiscicultureDlg::OnBnClickedButton3()
+{
+	int nIndex = m_listVolPoissons.GetCurSel();
+	
+	if (nIndex == LB_ERR)
+	{
+		MessageBox(_T("Veuillez sélectionner un nombre de poissons."), _T("Attention"), MB_OK);
+		return;
+	}
+	
+	int nPoissonsVoles = (nIndex + 1) * 10;
+	
+	// TODO: Soustraire nPoissonsVoles de m_pisciculture
+}
+
+void CsupervisionpiscicultureDlg::OnCbnSelchangeCombo1()
+{
+	int nIndex = m_comboArrivage.GetCurSel();
+	
+	if (nIndex == CB_ERR)
+	{
+		return;
+	}
+	
+	int nAlevins = (nIndex + 1) * 10;
+	
+	m_pisciculture.arrivage(nAlevins);
+}
+
+
+void CsupervisionpiscicultureDlg::OnEnChangeEdit1()
+{
+	// TODO:  S'il s'agit d'un contrôle RICHEDIT, le contrôle ne
+	// envoyez cette notification sauf si vous substituez CDialogEx::OnInitDialog()
+	// fonction et appelle CRichEditCtrl().SetEventMask()
+	// avec l'indicateur ENM_CHANGE ajouté au masque grâce à l'opérateur OR.
+
+	// TODO:  Ajoutez ici le code de votre gestionnaire de notification de contrôle
+}
+
+
+
